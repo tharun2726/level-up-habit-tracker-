@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEVEL UP — Study Tracker</title>
+<style>
+:root {
+  --bg:#090b10;
+  --panel:#11151d;
+  --panel2:#171c26;
+  --line:#272e3b;
+  --green:#b8ff57;
+  --muted:#929bac;
+  --text:#f3f5fa;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Arial,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.app{max-width:1400px;margin:auto;padding:26px}
+header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:30px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;background:var(--green);color:#111;border-radius:13px;display:grid;place-items:center;font-size:23px;font-weight:900}
+.brand h1{font-size:19px;letter-spacing:2px;margin:0}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:11px;letter-spacing:2px}
+.date-label{color:var(--muted);font-size:13px;text-align:right}
+.hero{
+  background:linear-gradient(120deg,#19241a,#11151d 60%,#181a28);
+  border:1px solid #303b30;border-radius:24px;padding:30px;
+  display:grid;grid-template-columns:1.4fr 1fr;gap:25px;
+  position:relative;overflow:hidden;margin-bottom:22px;
+}
+.hero:after{content:"";position:absolute;width:270px;height:270px;border-radius:50%;border:1px solid #b8ff571a;right:8%;top:-170px;box-shadow:0 0 0 35px #b8ff5707,0 0 0 70px #b8ff5705;pointer-events:none}
+.eyebrow{font-size:11px;color:var(--green);letter-spacing:2px;font-weight:800}
+.hero h2{font-size:clamp(29px,4vw,48px);line-height:1.1;margin:14px 0 12px;letter-spacing:-1.5px}
+.hero h2 span{color:var(--green)}
+.hero p{color:var(--muted);font-size:14px;line-height:1.7;max-width:480px}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px}
+.hero-stats strong{display:block;font-size:25px}
+.hero-stats small{color:var(--muted);font-size:11px}
+.level-card{align-self:center;background:#0c100de0;border:1px solid #37442e;border-radius:19px;padding:22px}
+.level-top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.level-num{font-size:38px;font-weight:900;color:var(--green)}
+.level-title{font-size:12px;color:var(--muted)}
+.level-tag{border:1px solid #4d623a;color:var(--green);border-radius:20px;padding:6px 10px;font-size:10px;letter-spacing:1px}
+.progress-track{height:8px;background:#252c27;border-radius:20px;overflow:hidden;margin:18px 0 9px}
+.progress-fill{height:100%;width:0;background:var(--green);border-radius:20px;transition:width .4s}
+.progress-caption{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:22px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;min-width:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.panel-head h3{font-size:15px;margin:0}
+.panel-head p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.pill{font-size:10px;color:var(--green);background:#b8ff5712;border:1px solid #b8ff5730;border-radius:20px;padding:7px 10px;white-space:nowrap}
+.habit-list{display:grid;gap:10px}
+.habit{
+  background:var(--panel2);border:1px solid #262d39;border-radius:13px;
+  padding:13px;display:flex;align-items:center;gap:12px;transition:.2s;
+}
+.habit.done{border-color:#526d37;background:#182119}
+.check{
+  width:24px;height:24px;flex:0 0 24px;border:1px solid #4a5362;
+  border-radius:7px;background:transparent;color:#10140b;font-weight:900;
+}
+.done .check{background:var(--green);border-color:var(--green)}
+.habit-name{font-size:13px;font-weight:700}
+.habit-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.habit.done .habit-name{color:#b9c5b1}
+.xp{margin-left:auto;color:var(--green);font-size:11px;white-space:nowrap}
+.delete{border:0;background:transparent;color:#687181;padding:5px;font-size:16px}
+.delete:hover{color:#ff7777}
+.add-row{display:flex;gap:8px;margin-top:14px}
+.add-row input{min-width:0;flex:1;background:#0b0e14;border:1px solid var(--line);color:white;border-radius:10px;padding:12px;font-size:12px}
+.btn{background:var(--green);color:#10150b;border:0;border-radius:10px;padding:11px 15px;font-weight:800;font-size:12px}
+.btn:hover{filter:brightness(1.08)}
+.btn.secondary{background:#202632;color:var(--text);border:1px solid var(--line)}
+.btn.danger{color:#ff9b9b}
+.today-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.mini{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:15px}
+.mini span{font-size:10px;color:var(--muted)}
+.mini strong{display:block;font-size:24px;margin-top:8px}
+.mini strong em{font-size:11px;font-style:normal;color:var(--green)}
+.chart{height:150px;display:flex;align-items:end;justify-content:space-around;gap:12px;border-bottom:1px solid var(--line);padding:10px 0 0}
+.chart-col{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}
+.bar-wrap{height:100%;width:100%;display:flex;align-items:end;justify-content:center}
+.bar{width:min(30px,80%);min-height:3px;border-radius:6px 6px 2px 2px;background:#35432d;transition:height .3s}
+.bar.today{background:var(--green);box-shadow:0 0 15px #b8ff5720}
+.chart-col small{font-size:10px;color:var(--muted);padding-bottom:9px}
+.chart-legend{color:var(--muted);font-size:10px;margin-top:12px}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar .weekday{text-align:center;color:var(--muted);font-size:9px;padding-bottom:5px}
+.day{aspect-ratio:1;border-radius:5px;background:#202632;display:grid;place-items:center;font-size:10px;color:#aeb6c5}
+.day.empty{background:transparent}
+.day.active{background:#42642e;color:#e9ffd7}
+.day.perfect{background:var(--green);color:#10150b;font-weight:900}
+.day.today{outline:1px solid white;outline-offset:1px}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+.quote{color:#d7deca;font-size:15px;line-height:1.7}
+.quote small{display:block;color:var(--muted);font-size:10px;letter-spacing:1px;margin-top:12px}
+footer{padding:26px 0 8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#626b7b;font-size:10px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--green);color:#111;padding:12px 18px;border-radius:12px;font-size:12px;font-weight:800;transition:.25s;z-index:5}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:800px){
+ .app{padding:15px}.hero{grid-template-columns:1fr;padding:23px}.grid{grid-template-columns:1fr}.lower{grid-template-columns:1fr}
+ .hero h2{font-size:36px}.level-card{max-width:none}
+}
+@media(max-width:420px){
+ .app{padding:10px}.panel{padding:15px}.hero{padding:19px}.brand h1{font-size:16px}
+ .date-label{font-size:10px}.hero-stats{gap:17px}.hero-stats strong{font-size:21px}
+ .panel-head{align-items:flex-start}.add-row .btn{padding:10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">↗</div>
+      <div><h1>LEVEL UP<span style="color:var(--green)">.</span></h1><p>YOUR PERSONAL GROWTH SYSTEM</p></div>
+    </div>
+    <div class="date-label" id="headerDate"></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">● YOUR JOURNEY STARTS HERE</div>
+      <h2>Build habits.<br><span>Become unstoppable.</span></h2>
+      <p>Small steps every day. Track your consistency, collect XP, and turn your goals into progress.</p>
+      <div class="hero-stats">
+        <div><strong id="totalXP">0</strong><small>TOTAL XP</small></div>
+        <div><strong id="streak">0 🔥</strong><small>CURRENT STREAK</small></div>
+        <div><strong id="bestDay">0%</strong><small>BEST DAY</small></div>
+      </div>
+    </div>
+    <div class="level-card">
+      <div class="level-top">
+        <div><div class="level-title">YOUR CURRENT RANK</div><div class="level-num" id="level">LVL 1</div></div>
+        <div class="level-tag" id="rank">ROOKIE</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="levelBar"></div></div>
+      <div class="progress-caption"><span id="levelXP">0 / 100 XP</span><span id="nextLevel">100 XP to next level</span></div>
+    </div>
+  </section>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="panel-head">
+        <div><h3>Daily missions</h3><p>Complete your habits to earn XP.</p></div>
+        <div class="pill" id="missionCount">0 / 0 DONE</div>
+      </div>
+      <div class="habit-list" id="habitList"></div>
+      <form class="add-row" id="addForm">
+        <input id="habitInput" maxlength="70" placeholder="Add a new daily habit..." required>
+        <button class="btn" type="submit">+ Add</button>
+      </form>
+      <p style="font-size:10px;color:var(--muted);margin-bottom:0">Each completed habit earns 10 XP. Custom habits are yours to define.</p>
+    </section>
+
+    <div>
+      <section class="panel" style="margin-bottom:22px">
+        <div class="panel-head"><div><h3>Today's performance</h3><p>Your progress at a glance.</p></div></div>
+        <div class="today-summary">
+          <div class="mini"><span>COMPLETION</span><strong id="completion">0<em>%</em></strong></div>
+          <div class="mini"><span>XP EARNED TODAY</span><strong id="todayXP">0</strong></div>
+          <div class="mini"><span>MISSIONS LEFT</span><strong id="remaining">0</strong></div>
+          <div class="mini"><span>DAILY GOAL</span><strong id="goal">0<em>%</em></strong></div>
+        </div>
+        <div class="panel-head"><div><h3>Weekly activity</h3><p>Completion rate by day</p></div><div class="pill">7 DAYS</div></div>
+        <div class="chart" id="chart"></div>
+        <div class="chart-legend">▰ Daily habit completion · Updates automatically</div>
+      </section>
+    </div>
+  </main>
+
+  <section class="lower">
+    <div class="panel">
+      <div class="panel-head"><div><h3>Consistency calendar</h3><p id="monthLabel"></p></div><div class="pill">MONTHLY</div></div>
+      <div class="calendar" id="calendar"></div>
+      <p style="font-size:10px;color:var(--muted);margin-bottom:0">Green days show your completed habits. Bright green means all habits were completed.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div><h3>Mindset checkpoint</h3><p>One day at a time.</p></div><div class="pill">FOCUS</div></div>
+      <div class="quote">“You don't need to be perfect. You just need to keep showing up, even on the days when motivation is low.”<small>YOUR DAILY REMINDER</small></div>
+      <div class="divider" style="border-top:1px solid var(--line);margin:20px 0"></div>
+      <h3 style="font-size:13px">Your data, your control</h3>
+      <p style="font-size:11px;color:var(--muted);line-height:1.7">Your progress is saved in this browser on this device. Export a backup before switching devices or clearing browser data.</p>
+      <div class="actions">
+        <button class="btn secondary" id="exportBtn">↓ Export backup</button>
+        <button class="btn secondary danger" id="resetBtn">Reset progress</button>
+      </div>
+    </div>
+  </section>
+  <footer><span>LEVEL UP © <span id="year"></span> · BUILT FOR CONSISTENCY</span><span>ONE DAY BETTER THAN YESTERDAY.</span></footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = "levelUpTracker_v1";
+const defaultHabits = [
+  {id:"h1",name:"Study / Deep Work",xp:10},
+  {id:"h2",name:"Read for 20 minutes",xp:10},
+  {id:"h3",name:"Exercise or stretch",xp:10},
+  {id:"h4",name:"Learn something new",xp:10},
+  {id:"h5",name:"Plan tomorrow",xp:10}
+];
+
+function localDateKey(date = new Date()) {
+  return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+}
+function blankState() {
+  return {habits:defaultHabits.map(h=>({...h})),days:{},createdAt:localDateKey()};
+}
+function loadState() {
+  try {
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(saved && Array.isArray(saved.habits) && saved.days) return saved;
+  } catch(e) {}
+  return blankState();
+}
+let state=loadState();
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){notify("Browser storage unavailable");}}
+function todayData(){return state.days[localDateKey()]||{};}
+function completedCount(dateKey){const d=state.days[dateKey]||{};return state.habits.filter(h=>d[h.id]).length;}
+function completionFor(dateKey){return state.habits.length?Math.round(completedCount(dateKey)/state.habits.length*100):0;}
+function getTotalXP(){
+  return Object.values(state.days).reduce((sum,d)=>sum+Number(d.xpEarned||0),0);
+}
+function getRank(level){
+  if(level>=20)return "LEGEND";
+  if(level>=10)return "MASTER";
+  if(level>=5)return "ELITE";
+  if(level>=3)return "WARRIOR";
+  return "ROOKIE";
+}
+function getStreak(){
+  let streak=0;
+  const d=new Date();
+  if(completionFor(localDateKey(d))===0)d.setDate(d.getDate()-1);
+  while(completionFor(localDateKey(d))>0 && streak<3660){streak++;d.setDate(d.getDate()-1);}
+  return streak;
+}
+function bestDay(){
+  return Math.max(0,...Object.keys(state.days).map(k=>completionFor(k)));
+}
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function renderHabits(){
+  const list=document.getElementById("habitList"),d=todayData();
+  list.innerHTML="";
+  if(!state.habits.length){
+    list.innerHTML='<p style="color:var(--muted);font-size:12px">No habits yet. Add your first mission above!</p>';
+  }
+  state.habits.forEach(h=>{
+    const done=!!d[h.id];
+    const row=document.createElement("div");
+    row.className="habit"+(done?" done":"");
+    row.innerHTML=`
+      <button class="check" aria-label="${done?"Mark incomplete":"Complete habit"}">${done?"✓":""}</button>
+      <div><div class="habit-name">${escapeHTML(h.name)}</div><div class="habit-sub">${done?"MISSION COMPLETE":"DAILY MISSION"}</div></div>
+      <div class="xp">+${h.xp||10} XP</div>
+      <button class="delete" title="Delete habit" aria-label="Delete ${escapeHTML(h.name)}">×</button>`;
+    row.querySelector(".check").addEventListener("click",()=>toggleHabit(h.id));
+    row.querySelector(".delete").addEventListener("click",()=>deleteHabit(h.id));
+    list.appendChild(row);
+  });
+  document.getElementById("missionCount").textContent=`${completedCount(localDateKey())} / ${state.habits.length} DONE`;
+}
+function renderStats(){
+  const today=localDateKey(),done=completedCount(today),total=state.habits.length;
+  const percent=completionFor(today),xp=Number(todayData().xpEarned||0);
+  const totalXP=getTotalXP(),level=Math.floor(totalXP/100)+1,within=totalXP%100;
+  document.getElementById("totalXP").textContent=totalXP.toLocaleString();
+  document.getElementById("streak").textContent=getStreak()+" 🔥";
+  document.getElementById("bestDay").textContent=bestDay()+"%";
+  document.getElementById("level").textContent="LVL "+level;
+  document.getElementById("rank").textContent=getRank(level);
+  document.getElementById("levelBar").style.width=within+"%";
+  document.getElementById("levelXP").textContent=within+" / 100 XP";
+  document.getElementById("nextLevel").textContent=(100-within)+" XP to next level";
+  document.getElementById("completion").innerHTML=percent+"<em>%</em>";
+  document.getElementById("todayXP").textContent=xp;
+  document.getElementById("remaining").textContent=Math.max(0,total-done);
+  document.getElementById("goal").innerHTML=percent+"<em>%</em>";
+}
+function renderChart(){
+  const chart=document.getElementById("chart");chart.innerHTML="";
+  const today=new Date();
+  const days=[];
+  for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(today.getDate()-i);days.push(d);}
+  days.forEach(d=>{
+    const key=localDateKey(d),rate=completionFor(key),isToday=key===localDateKey();
+    const col=document.createElement("div");col.className="chart-col";
+    col.innerHTML=`<div class="bar-wrap"><div class="bar ${isToday?"today":""}" title="${rate}% complete" style="height:${rate}%"></div></div><small>${d.toLocaleDateString("en",{weekday:"short"})}</small>`;
+    chart.appendChild(col);
+  });
+}
+function renderCalendar(){
+  const cal=document.getElementById("calendar");cal.innerHTML="";
+  const now=new Date(),year=now.getFullYear(),month=now.getMonth();
+  document.getElementById("monthLabel").textContent=now.toLocaleDateString("en",{month:"long",year:"numeric"});
+  ["S","M","T","W","T","F","S"].forEach(w=>{
+    const el=document.createElement("div");el.className="weekday";el.textContent=w;cal.appendChild(el);
+  });
+  const first=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();
+  for(let i=0;i<first;i++){const e=document.createElement("div");e.className="day empty";cal.appendChild(e);}
+  for(let n=1;n<=days;n++){
+    const d=new Date(year,month,n),key=localDateKey(d),rate=completionFor(key);
+    const el=document.createElement("div");
+    el.className="day"+(rate>0?" active":"")+(rate===100&&state.habits.length?" perfect":"")+(key===localDateKey()?" today":"");
+    el.textContent=n;el.title=`${key}: ${rate}% complete`;cal.appendChild(el);
+  }
+}
+function render(){
+  const now=new Date();
+  document.getElementById("headerDate").textContent=now.toLocaleDateString("en",{weekday:"long",month:"short",day:"numeric",year:"numeric"});
+  document.getElementById("year").textContent=now.getFullYear();
+  renderHabits();renderStats();renderChart();renderCalendar();
+}
+function toggleHabit(id){
+  const key=localDateKey();
+  if(!state.days[key])state.days[key]={};
+  const d=state.days[key],habit=state.habits.find(h=>h.id===id);
+  if(!habit)return;
+  if(d[id]){
+    delete d[id];d.xpEarned=Math.max(0,Number(d.xpEarned||0)-(habit.xp||10));
+    notify("Mission unchecked");
+  }else{
+    d[id]=true;d.xpEarned=Number(d.xpEarned||0)+(habit.xp||10);
+    notify("Mission complete! +"+(habit.xp||10)+" XP ⚡");
+  }
+  save();render();
+}
+function deleteHabit(id){
+  if(!confirm("Delete this habit? Its past records won't count toward future habit totals."))return;
+  state.habits=state.habits.filter(h=>h.id!==id);
+  Object.values(state.days).forEach(d=>{delete d[id];});
+  save();render();notify("Habit deleted");
+}
+document.getElementById("addForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const input=document.getElementById("habitInput"),name=input.value.trim();
+  if(!name)return;
+  if(state.habits.some(h=>h.name.toLowerCase()===name.toLowerCase())){
+    notify("That habit already exists");return;
+  }
+  state.habits.push({id:"h"+Date.now()+Math.random().toString(16).slice(2,6),name,xp:10});
+  input.value="";save();render();notify("New mission added!");
+});
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="level-up-backup-"+localDateKey()+".json";a.click();
+  URL.revokeObjectURL(url);notify("Backup exported");
+});
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  if(!confirm("Reset all habits and all saved progress? Export a backup first if you want to keep it."))return;
+  state=blankState();save();render();notify("Fresh start. You've got this!");
+});
+let toastTimer;
+function notify(message){
+  const el=document.getElementById("toast");el.textContent=message;el.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2200);
+}
+render();
+</script>
+</body>
+</html>
